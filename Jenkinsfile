@@ -34,6 +34,19 @@ pipeline {
                         sh 'npm run test:unit -- --reporter=verbose'
                     }
                 }
+
+                stage('e2e tests') {
+                    agent {
+                        docker {
+                            image 'mcr.microsoft.com/playwright:v1.54.2-jammy'
+                            reuseNode true
+                        }
+                    }
+                    steps {
+                        sh '[ -d node_modules ] || npm ci'
+                        sh 'npm run test:e2e -- --project=chromium'
+                    }
+                }
             }
         }
 
